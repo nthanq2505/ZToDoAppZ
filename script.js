@@ -37,6 +37,14 @@ function deleteTask(index) {
     // renderTasks()
 }
 
+function editTask(index) {
+    const newName = prompt('Enter new name');
+    if (newName) {
+        tasks[index].name = newName;
+        renderTasks();
+    }
+}
+
 
 function renderTasks() {
     taskList.innerHTML = '';
