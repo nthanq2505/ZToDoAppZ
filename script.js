@@ -8,7 +8,9 @@ const cancelButtons = document.querySelector('.cancel-modal');
 const edit_task = document.querySelector('.modal');
 
 
-let tasks = [];
+const tasks = [
+
+];
 let currentTaskIndex = null;
 
 renderTasks()
@@ -61,6 +63,25 @@ saveButtons.addEventListener('click', () => {
 cancelButtons.addEventListener('click', () => {
     edit_task.classList.remove('open');
 })
+
+function sortTask() {
+    for (let i = 0; i < tasks.length; i++) {
+        for (let j = i + 1; j < tasks.length; j++) {
+            if (tasks[i].isDone && !tasks[j].isDone) {
+                const temp = tasks[i];
+                tasks[i] = tasks[j];
+                tasks[j] = temp;
+            }
+        }
+    }
+}
+
+function toggleTask(index) {
+    tasks[index].isDone = !tasks[index].isDone
+    sortTask()
+    renderTasks()
+
+}
 
 function renderTasks() {
     taskList.innerHTML = '';
