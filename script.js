@@ -2,17 +2,14 @@ const taskList = document.querySelector('.list__task');
 const addButton = document.querySelector('.add__button');
 const cancelButton = document.querySelector('.cancel__button');
 
+const editButtons = document.querySelectorAll('#edit-button');
+const saveButtons = document.querySelector('.save-modal');
+const cancelButtons = document.querySelector('.cancel-modal');
+const edit_task = document.querySelector('.modal');
 
 
-let tasks = [
-    {
-        name: "hasdhasd",
-    },
-    {
-        name: "Asdfsda"
-    },
-
-];
+let tasks = [];
+let currentTaskIndex = null;
 
 renderTasks()
 
@@ -34,9 +31,36 @@ cancelButton.onclick = () => {
 
 function deleteTask(index) {
     tasks.splice(index, 1)
-    // renderTasks()
+    renderTasks()
 }
 
+function editTask(index) {
+    const newName = prompt('Enter new name');
+    if (newName) {
+        tasks[index].name = newName;
+        renderTasks();
+    }
+}
+
+function editTask(index) {
+    currentTaskIndex = index;
+    const editInput = document.querySelector('.edit__input');
+    editInput.value = tasks[index].name;
+    edit_task.classList.add('open');
+}
+
+saveButtons.addEventListener('click', () => {
+    const newName = document.querySelector('.edit__input').value;
+    edit_task.classList.remove('open');
+    if (newName) {
+        tasks[currentTaskIndex].name = newName;
+        renderTasks();
+    }
+})
+
+cancelButtons.addEventListener('click', () => {
+    edit_task.classList.remove('open');
+})
 
 function renderTasks() {
     taskList.innerHTML = '';
@@ -52,3 +76,5 @@ function renderTasks() {
         taskList.appendChild(taskItem);
     });
 }
+
+
