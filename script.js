@@ -8,10 +8,9 @@ const cancelButtons = document.querySelector('.cancel-modal');
 const edit_task = document.querySelector('.modal');
 
 
-const tasks = [
-
-];
+const tasks = [];
 let currentTaskIndex = null;
+let currentFilter = 'all';
 
 renderTasks()
 
@@ -22,6 +21,7 @@ addButton.onclick = () => {
     if (taskName) {
         tasks.push({ name: taskName, isDone: false });
         taskNameInput.value = '';
+        sortTask();
         renderTasks();
     }
 }
@@ -83,19 +83,53 @@ function toggleTask(index) {
 
 }
 
+const filterInput = document.querySelector('#filter');
+filterInput.onchange = filter;
+
+function filter() {
+    console.log('filter')
+    currentFilter = document.querySelector('#filter').value;
+    renderTasks()
+}
+
+
 function renderTasks() {
     taskList.innerHTML = '';
 
-    tasks.forEach((task, index) => {
-        const taskItem = document.createElement('li');
-        taskItem.innerHTML = `
-            <input class="check-box" type="checkbox" ${task.isDone ? 'checked' : ''} onclick="toggleTask(${index})">
-            <span>${task.name}</span>
-            <button onclick="editTask(${index})">Edit</button>
-            <button onclick="deleteTask(${index})">Delete</button>
-        `;
-        taskList.appendChild(taskItem);
-    });
+    if (currentFilter === 'all') {
+        tasks.forEach((task, index) => {
+            const taskItem = document.createElement('li');
+            taskItem.innerHTML = `
+                <input class="check-box" type="checkbox" ${task.isDone ? 'checked' : ''} onclick="toggleTask(${index})">
+                <span>${task.name}</span>
+                <button onclick="editTask(${index})">Edit</button>
+                <button class="red-button" onclick="deleteTask(${index})">Delete</button>
+            `;
+            taskList.appendChild(taskItem);
+        });
+    } else if (currentFilter === 'done') {
+        tasks.filter(task => task.isDone).forEach((task, index) => {
+            const taskItem = document.createElement('li');
+            taskItem.innerHTML = `
+                <input class="check-box" type="checkbox" checked onclick="toggleTask(${index})">
+                <span>${task.name}</span>
+                <button onclick="editTask(${index})">Edit</button>
+                <button class="red-button" onclick="deleteTask(${index})">Delete</button>
+            `;
+            taskList.appendChild(taskItem);
+        });
+    } else if (currentFilter === 'not-done') {
+        tasks.filter(task => !task.isDone).forEach((task, index) => {
+            const taskItem = document.createElement('li');
+            taskItem.innerHTML = `
+                <input class="check-box" type="checkbox" onclick="toggleTask(${index})">
+                <span>${task.name}</span>
+                <button onclick="editTask(${index})">Edit</button>
+                <button class="red-button" onclick="deleteTask(${index})">Delete</button>
+            `;
+            taskList.appendChild(taskItem);
+        });
+    }
 }
 
 
