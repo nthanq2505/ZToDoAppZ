@@ -7,17 +7,19 @@ const saveButtons = document.querySelector('.save-modal');
 const cancelButtons = document.querySelector('.cancel-modal');
 const edit_task = document.querySelector('.modal');
 
+const filterInput = document.querySelector('#filter');
+
 
 const tasks = [];
 let currentTaskIndex = null;
 let currentFilter = 'all';
-
 renderTasks()
+
 
 addButton.onclick = () => {
     const taskNameInput = document.querySelector('.add__input');
     const taskName = taskNameInput.value;
-
+    
     if (taskName) {
         tasks.push({ name: taskName, isDone: false });
         taskNameInput.value = '';
@@ -26,23 +28,17 @@ addButton.onclick = () => {
     }
 }
 
-cancelButton.onclick = () => {
 
+cancelButton.onclick = () => {
     document.querySelector('.add__input').value = '';
 }
+
 
 function deleteTask(index) {
     tasks.splice(index, 1)
     renderTasks()
 }
 
-function editTask(index) {
-    const newName = prompt('Enter new name');
-    if (newName) {
-        tasks[index].name = newName;
-        renderTasks();
-    }
-}
 
 function editTask(index) {
     currentTaskIndex = index;
@@ -50,6 +46,7 @@ function editTask(index) {
     editInput.value = tasks[index].name;
     edit_task.classList.add('open');
 }
+
 
 saveButtons.addEventListener('click', () => {
     const newName = document.querySelector('.edit__input').value;
@@ -60,9 +57,11 @@ saveButtons.addEventListener('click', () => {
     }
 })
 
+
 cancelButtons.addEventListener('click', () => {
     edit_task.classList.remove('open');
 })
+
 
 function sortTask() {
     for (let i = 0; i < tasks.length; i++) {
@@ -76,6 +75,7 @@ function sortTask() {
     }
 }
 
+
 function toggleTask(index) {
     tasks[index].isDone = !tasks[index].isDone
     sortTask()
@@ -83,9 +83,8 @@ function toggleTask(index) {
 
 }
 
-const filterInput = document.querySelector('#filter');
-filterInput.onchange = filter;
 
+filterInput.onchange = filter;
 function filter() {
     console.log('filter')
     currentFilter = document.querySelector('#filter').value;
