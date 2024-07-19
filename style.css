@@ -1,18 +1,27 @@
+body {
+  background-color: rgb(246, 241, 234);
+}
+
 .container {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #dee2de;
-    border-radius: 5px;
-    padding: 20px;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    margin: 0 auto;
-  }
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dee2de;
+  border-radius: 5px;
+  padding: 20px;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  margin: 0 auto;
+}
   
 img {
   width: 200px;
+}
+.red-button {
+  background-color: #ff4d4d;
+  color: #000;
 }
 
 button {
@@ -23,10 +32,6 @@ button {
   border: none;
 }
 
-.delete-button {
-  background-color: #ff4d4d;
-  color: #000;
-}
 
 .edit-button {
   opacity: 1;
@@ -42,7 +47,7 @@ button {
 .list__task {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -52,7 +57,7 @@ button {
 li {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -102,4 +107,19 @@ input {
   border-radius: 5px;
   border: 1px solid #dee2de;
 
+}
+
+.filter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+}
+
+select {
+  background-color: transparent;
+  padding: 2px 5px;
+  margin: 0;
+  width: 100%;
 }
