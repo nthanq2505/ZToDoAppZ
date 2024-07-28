@@ -26,6 +26,7 @@ TaskManager.prototype.addTask = function () {
     if (taskName) {
         this.tasks.push({ name: taskName, isDone: false });
         taskNameInput.value = '';
+        this.sortTasks();
         this.renderTasks();
     }
 };
@@ -59,8 +60,21 @@ TaskManager.prototype.cancelEdit = function () {
     this.edit_task.classList.remove('open');
 };
 
+TaskManager.prototype.sortTasks = function () {
+    for (let i = 0; i < this.tasks.length; i++) {
+        for (let j = i + 1; j < this.tasks.length; j++) {
+            if (this.tasks[i].isDone && !this.tasks[j].isDone) {
+                const temp = this.tasks[i];
+                this.tasks[i] = this.tasks[j];
+                this.tasks[j] = temp;
+            }
+        }
+    }
+};
+
 TaskManager.prototype.toggleTask = function (index) {
     this.tasks[index].isDone = !this.tasks[index].isDone;
+    this.sortTasks();
     this.renderTasks();
 };
 
