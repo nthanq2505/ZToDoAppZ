@@ -19,7 +19,7 @@ function TaskManager() {
     this.renderTasks();
 }
 
-TaskManager.prototype.addTask = function() {
+TaskManager.prototype.addTask = function () {
     const taskNameInput = document.querySelector('.add__input');
     const taskName = taskNameInput.value;
 
@@ -30,18 +30,23 @@ TaskManager.prototype.addTask = function() {
     }
 };
 
-TaskManager.prototype.cancelAdd = function() {
+TaskManager.prototype.cancelAdd = function () {
     document.querySelector('.add__input').value = '';
 };
 
-TaskManager.prototype.editTask = function(index) {
+TaskManager.prototype.deleteTask = function (index) {
+    this.tasks.splice(index, 1);
+    this.renderTasks();
+};
+
+TaskManager.prototype.editTask = function (index) {
     this.currentTaskIndex = index;
     const editInput = document.querySelector('.edit__input');
     editInput.value = this.tasks[index].name;
     this.edit_task.classList.add('open');
 };
 
-TaskManager.prototype.saveEdit = function() {
+TaskManager.prototype.saveEdit = function () {
     const newName = document.querySelector('.edit__input').value;
     this.edit_task.classList.remove('open');
     if (newName) {
@@ -50,16 +55,16 @@ TaskManager.prototype.saveEdit = function() {
     }
 };
 
-TaskManager.prototype.cancelEdit = function() {
+TaskManager.prototype.cancelEdit = function () {
     this.edit_task.classList.remove('open');
 };
 
-TaskManager.prototype.toggleTask = function(index) {
+TaskManager.prototype.toggleTask = function (index) {
     this.tasks[index].isDone = !this.tasks[index].isDone;
     this.renderTasks();
 };
 
-TaskManager.prototype.renderTasks = function() {
+TaskManager.prototype.renderTasks = function () {
     this.taskList.innerHTML = '';
 
 
