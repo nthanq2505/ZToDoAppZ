@@ -50,6 +50,13 @@ TaskManager.prototype.renderTasks = function() {
     });
 };
 
+TaskManager.prototype.editTask = function(index) {
+    this.currentTaskIndex = index;
+    const editInput = document.querySelector('.edit__input');
+    editInput.value = this.tasks[index].name;
+    this.edit_task.classList.add('open');
+};
+
 const taskManager = new TaskManager();
 
 
