@@ -7,9 +7,14 @@ function TaskManager() {
     this.taskList = document.querySelector('.list__task');
     this.addButton = document.querySelector('.add__button');
     this.cancelButton = document.querySelector('.cancel__button');
+    this.saveButtons = document.querySelector('.save-modal');
+    this.cancelButtons = document.querySelector('.cancel-modal');
+    this.edit_task = document.querySelector('.modal');
 
     this.addButton.onclick = this.addTask.bind(this);
     this.cancelButton.onclick = this.cancelAdd.bind(this);
+    this.saveButtons.onclick = this.saveEdit.bind(this);
+    this.cancelButtons.onclick = this.cancelEdit.bind(this);
 
     this.renderTasks();
 }
@@ -27,6 +32,26 @@ TaskManager.prototype.addTask = function() {
 
 TaskManager.prototype.cancelAdd = function() {
     document.querySelector('.add__input').value = '';
+};
+
+TaskManager.prototype.editTask = function(index) {
+    this.currentTaskIndex = index;
+    const editInput = document.querySelector('.edit__input');
+    editInput.value = this.tasks[index].name;
+    this.edit_task.classList.add('open');
+};
+
+TaskManager.prototype.saveEdit = function() {
+    const newName = document.querySelector('.edit__input').value;
+    this.edit_task.classList.remove('open');
+    if (newName) {
+        this.tasks[this.currentTaskIndex].name = newName;
+        this.renderTasks();
+    }
+};
+
+TaskManager.prototype.cancelEdit = function() {
+    this.edit_task.classList.remove('open');
 };
 
 TaskManager.prototype.toggleTask = function(index) {
@@ -48,13 +73,6 @@ TaskManager.prototype.renderTasks = function() {
         `;
         this.taskList.appendChild(taskItem);
     });
-};
-
-TaskManager.prototype.editTask = function(index) {
-    this.currentTaskIndex = index;
-    const editInput = document.querySelector('.edit__input');
-    editInput.value = this.tasks[index].name;
-    this.edit_task.classList.add('open');
 };
 
 const taskManager = new TaskManager();
