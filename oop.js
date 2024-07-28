@@ -1,4 +1,3 @@
-// This file to change the object oriented programming in javascript
 function TaskManager() {
     this.tasks = [];
     this.currentTaskIndex = null;
@@ -10,11 +9,13 @@ function TaskManager() {
     this.saveButtons = document.querySelector('.save-modal');
     this.cancelButtons = document.querySelector('.cancel-modal');
     this.edit_task = document.querySelector('.modal');
+    this.filterInput = document.querySelector('#filter');
 
     this.addButton.onclick = this.addTask.bind(this);
     this.cancelButton.onclick = this.cancelAdd.bind(this);
     this.saveButtons.onclick = this.saveEdit.bind(this);
     this.cancelButtons.onclick = this.cancelEdit.bind(this);
+    this.filterInput.onchange = this.filterTasks.bind(this);
 
     this.renderTasks();
 }
@@ -24,6 +25,9 @@ TaskManager.prototype.addTask = function () {
     const taskName = taskNameInput.value;
 
     if (taskName) {
+        if (this.currentFilter == 'done') {
+            this.currentFilter = 'all';
+        }
         this.tasks.push({ name: taskName, isDone: false });
         taskNameInput.value = '';
         this.sortTasks();
@@ -78,11 +82,21 @@ TaskManager.prototype.toggleTask = function (index) {
     this.renderTasks();
 };
 
+TaskManager.prototype.filterTasks = function() {
+    this.currentFilter = document.querySelector('#filter').value;
+    this.renderTasks();
+};
+
 TaskManager.prototype.renderTasks = function () {
     this.taskList.innerHTML = '';
 
+    const filteredTasks = this.tasks.filter(task => {
+        if (this.currentFilter === 'all') return true;
+        if (this.currentFilter === 'done') return task.isDone;
+        if (this.currentFilter === 'not-done') return !task.isDone;
+    });
 
-    this.tasks.forEach((task, index) => {
+    filteredTasks.forEach((task, index) => {
         const taskItem = document.createElement('li');
         taskItem.innerHTML = `
             <input class="check-box" type="checkbox" ${task.isDone ? 'checked' : ''} onclick="taskManager.toggleTask(${index})">
