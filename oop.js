@@ -27,6 +27,7 @@ TaskManager.prototype.addTask = function () {
     if (taskName) {
         if (this.currentFilter == 'done') {
             this.currentFilter = 'all';
+            this.filterInput.value = 'all';
         }
         this.tasks.push({ name: taskName, isDone: false });
         taskNameInput.value = '';
