@@ -102,6 +102,12 @@ span {
   width: 350px;
 }
 
+.model__button {
+  display: flex; 
+  gap: 30px; 
+  justify-content: space-around;
+}
+
 input {
   padding: 5px 10px;
   border-radius: 5px;
