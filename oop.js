@@ -1,18 +1,24 @@
+const StateOfFilterTasks = Object.freeze({
+    ALL: 'all',
+    DONE: 'done',
+    NOT_DONE: 'not_done'
+});
+
 function TaskManager() {
     this.tasks = [];
     this.currentTaskIndex = null;
-    this.currentFilter = 'all';
+    this.currentFilter = StateOfFilterTasks.ALL;
 
     this.taskList = document.querySelector('.list__task');
     this.addButton = document.querySelector('.add__button');
-    this.cancelButton = document.querySelector('.cancel__button');
+    this.clearButton = document.querySelector('.clear__button');
     this.saveButtons = document.querySelector('.save-modal');
     this.cancelButtons = document.querySelector('.cancel-modal');
     this.edit_task = document.querySelector('.modal');
     this.filterInput = document.querySelector('#filter');
 
     this.addButton.onclick = this.addTask.bind(this);
-    this.cancelButton.onclick = this.cancelAdd.bind(this);
+    this.clearButton.onclick = this.clearAdd.bind(this);
     this.saveButtons.onclick = this.saveEdit.bind(this);
     this.cancelButtons.onclick = this.cancelEdit.bind(this);
     this.filterInput.onchange = this.filterTasks.bind(this);
@@ -25,18 +31,18 @@ TaskManager.prototype.addTask = function () {
     const taskName = taskNameInput.value;
 
     if (taskName) {
-        if (this.currentFilter == 'done') {
-            this.currentFilter = 'all';
-            this.filterInput.value = 'all';
+        if (this.currentFilter === StateOfFilterTasks.DONE) {
+            this.currentFilter = StateOfFilterTasks.ALL;
+            this.filterInput.value = StateOfFilterTasks.ALL;
         }
         this.tasks.push({ name: taskName, isDone: false });
         taskNameInput.value = '';
-        this.sortTasks();
+        this.arrangeTaskList();
         this.renderTasks();
     }
 };
 
-TaskManager.prototype.cancelAdd = function () {
+TaskManager.prototype.clearAdd = function () {
     document.querySelector('.add__input').value = '';
 };
 
@@ -65,26 +71,22 @@ TaskManager.prototype.cancelEdit = function () {
     this.edit_task.classList.remove('open');
 };
 
-TaskManager.prototype.sortTasks = function () {
-    for (let i = 0; i < this.tasks.length; i++) {
-        for (let j = i + 1; j < this.tasks.length; j++) {
-            if (this.tasks[i].isDone && !this.tasks[j].isDone) {
-                const temp = this.tasks[i];
-                this.tasks[i] = this.tasks[j];
-                this.tasks[j] = temp;
-            }
-        }
-    }
+TaskManager.prototype.arrangeTaskList = function () {
+    this.tasks.sort((a, b) => {
+        if (a.isDone && !b.isDone) return 1;
+        if (!a.isDone && b.isDone) return -1;
+        return 0;
+    });
 };
 
 TaskManager.prototype.toggleTask = function (index) {
     this.tasks[index].isDone = !this.tasks[index].isDone;
-    this.sortTasks();
+    this.arrangeTaskList();
     this.renderTasks();
 };
 
 TaskManager.prototype.filterTasks = function() {
-    this.currentFilter = document.querySelector('#filter').value;
+    this.currentFilter = this.filterInput.value;
     this.renderTasks();
 };
 
@@ -92,9 +94,13 @@ TaskManager.prototype.renderTasks = function () {
     this.taskList.innerHTML = '';
 
     const filteredTasks = this.tasks.filter(task => {
-        if (this.currentFilter === 'all') return true;
-        if (this.currentFilter === 'done') return task.isDone;
-        if (this.currentFilter === 'not-done') return !task.isDone;
+        if (this.currentFilter === StateOfFilterTasks.ALL) {
+            return true;
+        } else if (this.currentFilter === StateOfFilterTasks.DONE) {
+            return task.isDone;
+        } else {
+            return !task.isDone;
+        }
     });
 
     filteredTasks.forEach((task, index) => {
