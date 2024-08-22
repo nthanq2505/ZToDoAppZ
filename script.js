@@ -1,134 +1,123 @@
-const taskList = document.querySelector('.list__task');
-const addButton = document.querySelector('.add__button');
-const cancelButton = document.querySelector('.cancel__button');
+const StateOfFilterTasks = Object.freeze({
+    ALL: 'all',
+    DONE: 'done',
+    NOT_DONE: 'not_done'
+});
 
-const editButtons = document.querySelectorAll('#edit-button');
-const saveButtons = document.querySelector('.save-modal');
-const cancelButtons = document.querySelector('.cancel-modal');
-const edit_task = document.querySelector('.modal');
+function TaskManager() {
+    this.tasks = [];
+    this.currentTaskIndex = null;
+    this.currentFilter = StateOfFilterTasks.ALL;
 
-const filterInput = document.querySelector('#filter');
+    this.taskList = document.querySelector('.list__task');
+    this.addButton = document.querySelector('.add__button');
+    this.clearButton = document.querySelector('.clear__button');
+    this.saveButtons = document.querySelector('.save-modal');
+    this.cancelButtons = document.querySelector('.cancel-modal');
+    this.edit_task = document.querySelector('.modal');
+    this.filterInput = document.querySelector('#filter');
 
+    this.addButton.onclick = this.addTask.bind(this);
+    this.clearButton.onclick = this.clearAdd.bind(this);
+    this.saveButtons.onclick = this.saveEdit.bind(this);
+    this.cancelButtons.onclick = this.cancelEdit.bind(this);
+    this.filterInput.onchange = this.filterTasks.bind(this);
 
-const tasks = [];
-let currentTaskIndex = null;
-let currentFilter = 'all';
-renderTasks()
+    this.renderTasks();
+}
 
-
-addButton.onclick = () => {
+TaskManager.prototype.addTask = function () {
     const taskNameInput = document.querySelector('.add__input');
     const taskName = taskNameInput.value;
-    
+
     if (taskName) {
-        tasks.push({ name: taskName, isDone: false });
-        taskNameInput.value = '';
-        sortTask();
-        renderTasks();
-    }
-}
-
-
-cancelButton.onclick = () => {
-    document.querySelector('.add__input').value = '';
-}
-
-
-function deleteTask(index) {
-    tasks.splice(index, 1)
-    renderTasks()
-}
-
-
-function editTask(index) {
-    currentTaskIndex = index;
-    const editInput = document.querySelector('.edit__input');
-    editInput.value = tasks[index].name;
-    edit_task.classList.add('open');
-}
-
-
-saveButtons.addEventListener('click', () => {
-    const newName = document.querySelector('.edit__input').value;
-    edit_task.classList.remove('open');
-    if (newName) {
-        tasks[currentTaskIndex].name = newName;
-        renderTasks();
-    }
-})
-
-
-cancelButtons.addEventListener('click', () => {
-    edit_task.classList.remove('open');
-})
-
-
-function sortTask() {
-    for (let i = 0; i < tasks.length; i++) {
-        for (let j = i + 1; j < tasks.length; j++) {
-            if (tasks[i].isDone && !tasks[j].isDone) {
-                const temp = tasks[i];
-                tasks[i] = tasks[j];
-                tasks[j] = temp;
-            }
+        if (this.currentFilter === StateOfFilterTasks.DONE) {
+            this.currentFilter = StateOfFilterTasks.ALL;
+            this.filterInput.value = StateOfFilterTasks.ALL;
         }
+        this.tasks.push({ name: taskName, isDone: false });
+        taskNameInput.value = '';
+        this.arrangeTaskList();
+        this.renderTasks();
     }
-}
+};
 
+TaskManager.prototype.clearAdd = function () {
+    document.querySelector('.add__input').value = '';
+};
 
-function toggleTask(index) {
-    tasks[index].isDone = !tasks[index].isDone
-    sortTask()
-    renderTasks()
+TaskManager.prototype.deleteTask = function (index) {
+    this.tasks.splice(index, 1);
+    this.renderTasks();
+};
 
-}
+TaskManager.prototype.editTask = function (index) {
+    this.currentTaskIndex = index;
+    const editInput = document.querySelector('.edit__input');
+    editInput.value = this.tasks[index].name;
+    this.edit_task.classList.add('open');
+};
 
-
-filterInput.onchange = filter;
-function filter() {
-    console.log('filter')
-    currentFilter = document.querySelector('#filter').value;
-    renderTasks()
-}
-
-
-function renderTasks() {
-    taskList.innerHTML = '';
-
-    if (currentFilter === 'all') {
-        tasks.forEach((task, index) => {
-            const taskItem = document.createElement('li');
-            taskItem.innerHTML = `
-                <input class="check-box" type="checkbox" ${task.isDone ? 'checked' : ''} onclick="toggleTask(${index})">
-                <span>${task.name}</span>
-                <button onclick="editTask(${index})">Edit</button>
-                <button class="red-button" onclick="deleteTask(${index})">Delete</button>
-            `;
-            taskList.appendChild(taskItem);
-        });
-    } else if (currentFilter === 'done') {
-        tasks.filter(task => task.isDone).forEach((task, index) => {
-            const taskItem = document.createElement('li');
-            taskItem.innerHTML = `
-                <input class="check-box" type="checkbox" checked onclick="toggleTask(${index})">
-                <span>${task.name}</span>
-                <button onclick="editTask(${index})">Edit</button>
-                <button class="red-button" onclick="deleteTask(${index})">Delete</button>
-            `;
-            taskList.appendChild(taskItem);
-        });
-    } else if (currentFilter === 'not-done') {
-        tasks.filter(task => !task.isDone).forEach((task, index) => {
-            const taskItem = document.createElement('li');
-            taskItem.innerHTML = `
-                <input class="check-box" type="checkbox" onclick="toggleTask(${index})">
-                <span>${task.name}</span>
-                <button onclick="editTask(${index})">Edit</button>
-                <button class="red-button" onclick="deleteTask(${index})">Delete</button>
-            `;
-            taskList.appendChild(taskItem);
-        });
+TaskManager.prototype.saveEdit = function () {
+    const newName = document.querySelector('.edit__input').value;
+    this.edit_task.classList.remove('open');
+    if (newName) {
+        this.tasks[this.currentTaskIndex].name = newName;
+        this.renderTasks();
     }
-}
+};
+
+TaskManager.prototype.cancelEdit = function () {
+    this.edit_task.classList.remove('open');
+};
+
+TaskManager.prototype.arrangeTaskList = function () {
+    this.tasks.sort((a, b) => {
+        if (a.isDone && !b.isDone) return 1;
+        if (!a.isDone && b.isDone) return -1;
+        return 0;
+    });
+};
+
+TaskManager.prototype.toggleTask = function (index) {
+    this.tasks[index].isDone = !this.tasks[index].isDone;
+    this.arrangeTaskList();
+    this.renderTasks();
+};
+
+TaskManager.prototype.filterTasks = function() {
+    this.currentFilter = this.filterInput.value;
+    this.renderTasks();
+};
+
+TaskManager.prototype.renderTasks = function () {
+    this.taskList.innerHTML = '';
+
+    const filteredTasks = this.tasks.filter(task => {
+        if (this.currentFilter === StateOfFilterTasks.ALL) {
+            return true;
+        } else if (this.currentFilter === StateOfFilterTasks.DONE) {
+            return task.isDone;
+        } else {
+            return !task.isDone;
+        }
+    });
+
+    filteredTasks.forEach((task, index) => {
+        const taskItem = document.createElement('li');
+        taskItem.innerHTML = `
+            <input class="check-box" type="checkbox" ${task.isDone ? 'checked' : ''} onclick="taskManager.toggleTask(${index})">
+            <span>${task.name}</span>
+            <button onclick="taskManager.editTask(${index})">Edit</button>
+            <button class="red-button" onclick="taskManager.deleteTask(${index})">Delete</button>
+        `;
+        this.taskList.appendChild(taskItem);
+    });
+};
+
+const taskManager = new TaskManager();
+
+
+
 
 

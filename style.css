@@ -15,8 +15,8 @@ body {
   width: 50%;
   margin: 0 auto;
 }
-  
-img {
+
+.logo {
   width: 200px;
 }
 
@@ -101,8 +101,8 @@ span {
 }
 
 .model__button {
-  display: flex; 
-  gap: 30px; 
+  display: flex;
+  gap: 30px;
   justify-content: space-around;
 }
 
@@ -110,7 +110,6 @@ input {
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid #dee2de;
-
 }
 
 .filter {
