@@ -2,6 +2,18 @@ body {
   background-color: rgb(246, 241, 234);
 }
 
+.username {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.logout-button {
+  background-color: #ff4d4d;
+  color: #000;
+}
+
 .container {
   background-color: white;
   display: flex;
@@ -25,12 +37,21 @@ body {
   color: #000;
 }
 
+.red-button:hover {
+  background-color: #ff3333;
+}
+
 button {
   background-color: #56d35b;
   padding: 5px 25px;
   border-radius: 5px;
   color: white;
   border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4bb24f;
 }
 
 .edit-button {
