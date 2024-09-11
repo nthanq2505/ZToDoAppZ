@@ -1,15 +1,8 @@
-const StateOfFilterTasks = Object.freeze({
-  ALL: "all",
-  DONE: "done",
-  NOT_DONE: "not_done",
-});
-
-const ApiRoot = "http://localhost:3000";
-
 function TaskManager(tasks = []) {
   this.tasks = tasks;
   this.currentTaskIndex = null;
   this.currentFilter = StateOfFilterTasks.ALL;
+  this.user = JSON.parse(localStorage.getItem("currentUser"));
 
   this.taskList = document.querySelector(".list__task");
   this.addButton = document.querySelector(".add__button");
@@ -113,13 +106,13 @@ TaskManager.prototype.renderTasks = function () {
   filteredTasks.forEach((task, index) => {
     const taskItem = document.createElement("li");
     taskItem.innerHTML = `
-              <input class="check-box" type="checkbox" ${
-                task.isDone ? "checked" : ""
-              } onclick="taskManager.toggleTask(${index})">
-              <span>${task.name}</span>
-              <button onclick="taskManager.editTask(${index})">Edit</button>
-              <button class="red-button" onclick="taskManager.deleteTask(${index})">Delete</button>
-          `;
+                <input class="check-box" type="checkbox" ${
+                  task.isDone ? "checked" : ""
+                } onclick="taskManager.toggleTask(${index})">
+                <span>${task.name}</span>
+                <button onclick="taskManager.editTask(${index})">Edit</button>
+                <button class="red-button" onclick="taskManager.deleteTask(${index})">Delete</button>
+            `;
     this.taskList.appendChild(taskItem);
   });
 };
@@ -142,111 +135,3 @@ TaskManager.prototype.saveTasks = function () {
   users[index] = user;
   localStorage.setItem("users", JSON.stringify(users));
 };
-
-function logout() {
-  localStorage.removeItem("currentUser");
-  window.location.href = "login.html";
-}
-
-function handleLogin() {
-  const username = document.querySelector("#username").value;
-  const password = document.querySelector("#password").value;
-  const remember = document.querySelector("#remember").checked;
-
-  try {
-    fetch(`${ApiRoot}/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    }).then(async (response) => {
-      const data = await response.json();
-      console.log(data);
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-      await localStorage.setItem("currentUser", JSON.stringify(data));
-      window.location.href = "index.html";
-    });
-  } catch (error) {
-    alert("Login failed. Please try again.");
-  }
-}
-
-function handleRegister() {
-  const username = document.querySelector("#username").value;
-  const password = document.querySelector("#password").value;
-  const repeatPassword = document.querySelector("#repeat-password").value;
-
-  if (password !== repeatPassword) {
-    alert("Password does not match");
-    return;
-  }
-
-  try {
-    fetch(`${ApiRoot}/api/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    }).then((response) => {
-      localStorage.setItem("user", response);
-      window.location.href = "index.html";
-    });
-  } catch (error) {
-    alert("Register failed. Please try again.");
-  }
-}
-
-window.onload = function () {
-  const localUser = localStorage.getItem("currentUser");
-  const currentWindow = window.location.href.split("/").pop();
-
-  if (localUser) {
-    if (
-      currentWindow === "login.html" ||
-      currentWindow === "register.html" ||
-      currentWindow === ""
-    ) {
-      window.location.href = "index.html";
-    }
-  } else {
-    if (currentWindow === "index.html" || currentWindow === "") {
-      window.location.href = "login.html";
-    }
-  }
-};
-const username = document.querySelector(".username");
-const user = JSON.parse(localStorage.getItem("currentUser"));
-
-if (window.location.href.split("/").pop() === "index.html") {
-  username.innerHTML = `
-          <p>Hello, ${user.username}</p>
-          <button class="red-button logout-button" onclick="logout()">Logout</button>
-      `;
-}
-
-try {
-  fetch(`${ApiRoot}/api/get-tasks`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "authorization": `Bearer ${user.token}`,
-    },
-
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      localStorage.setItem("tasks", JSON.stringify(data));
-    });
-} catch (error) {
-  console.log("Error fetching tasks");
-}
-
-const taskManager = new TaskManager(JSON.parse(localStorage.getItem("tasks")));
