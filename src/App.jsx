@@ -1,7 +1,12 @@
 import { RouterProvider } from 'react-router-dom'
 import { router } from './routes/routes'
+import { ChakraProvider } from '@chakra-ui/react'
 
 function App () {
-  return <RouterProvider router={router} />
+  return (
+    <ChakraProvider>
+      <RouterProvider router={router} />
+    </ChakraProvider>
+  )
 }
 export default App

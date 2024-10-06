@@ -1,7 +1,7 @@
 const { createBrowserRouter } = require('react-router-dom')
-import HomePage from '../components/HomePage/HomePage'
-import Login from '../components/Login/Login'
-import Register from '../components/Register/Register'
+import HomePage from '../pages/HomePage/HomePage'
+import Login from '../pages/Login/Login'
+import Register from '../pages/Register/Register'
 export const router = createBrowserRouter([
   {
     path: '/login',

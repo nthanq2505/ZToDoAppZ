@@ -17,9 +17,7 @@ export const loginAPI = async user => {
     )
     return response
   } catch (error) {
-    if (error.response && error.response.status === HttpStatusCode.NotFound) {
-      alert('Password or username not match')
-    }
+    throw error
   }
 }
 
@@ -32,9 +30,7 @@ export const registerAPI = async user => {
     )
     return response
   } catch (error) {
-    if (error.response && error.response.status === HttpStatusCode.Conflict) {
-      alert(error.response?.data)
-    }
+    throw error
   }
 }
 

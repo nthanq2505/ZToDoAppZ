@@ -8,7 +8,7 @@ import {
   updateTaskAPI
 } from '../../apis'
 import TaskList from './TaskLIst/TaskList'
-import ModalEditTask from './ModalEditTask/ModalEditTask'
+import ModalEditTask from '../../components/ModalEditTask/ModalEditTask'
 import { StateOfFilterTasks } from '../../utils/constants'
 
 export default function HomePage () {
