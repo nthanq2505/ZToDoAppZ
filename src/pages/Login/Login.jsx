@@ -66,112 +66,125 @@ export default function Login () {
   }
 
   return (
-    <HStack height='100vh' spacing={0}>
-      <Box
-        flex='1.56'
-        bgGradient='linear(to-b, #7BCBD4 , #29C6B7)'
-        color='white'
+      <HStack
+        spacing={0}
         height='100vh'
-        display={{ base: 'none', lg: 'flex' }}
-        alignItems='center'
+        overflowX='hidden'
+        direction={{ base: 'column', md: 'row' }}
       >
-        <VStack
-          spacing={6}
-          width='100%'
-          alignItems='flex-start'
-          px={10}
-          ml={10}
+        <Box
+          width={{ base: '100%', md: '60%' }}
+          bgGradient='linear(to-b, #7BCBD4 , #29C6B7)'
+          color='white'
+          height={{ base: 'auto', md: '100vh' }} 
+          display={{ base: 'none', md: 'flex' }} 
+          alignItems='center'
         >
-          <Heading as='h1' size='2xl'>
-            Todo App
-          </Heading>
-          <Text fontSize='lg'>Manage your work every day</Text>
-        </VStack>
-      </Box>
-
-      <Box
-        flex='1'
-        px={{ base: 6, md: 20 }}
-        py={16}
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-      >
-        <VStack
-          as='form'
-          align='stretch'
-          spacing={6}
-          width='100%'
-          maxW='320px'
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <Heading as='h2' size='lg'>
-            Welcome back!
-          </Heading>
-          <Text fontSize='md'>Login to Get Started</Text>
-
-          <FormControl isInvalid={errors.email}>
-            <FormLabel>Email Address</FormLabel>
-            <Input
-              type='text'
-              placeholder='name@example.com'
-              isDisabled={isSubmitting}
-              id='email'
-              {...register('email', {
-                required: 'This field can not be empty',
-                pattern: {
-                  value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
-                  message: 'Invalid email format'
-                }
-              })}
-            />
-            <FormErrorMessage>
-              {errors.email && errors.email.message}
-            </FormErrorMessage>
-          </FormControl>
-
-          <FormControl isInvalid={errors.password}>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type='password'
-              placeholder='Enter password'
-              isDisabled={isSubmitting}
-              id='password'
-              {...register('password', {
-                required: 'This field can not be empty'
-              })}
-            />
-            <FormErrorMessage>
-              {errors.password && errors.password.message}
-            </FormErrorMessage>
-          </FormControl>
-
-          <Text>
-            Don&apos;t have an account?{' '}
-            <Link href='/register' color='teal.500'>
-              Register here
-            </Link>
-          </Text>
-
-          <Button
-            colorScheme='teal'
-            width={75}
-            type='submit'
-            isLoading={isSubmitting}
+          <VStack
+            spacing={5}
+            width='100%'
+            alignItems='flex-start'
+            px={10}
+            ml={20}
           >
-            Login
-          </Button>
-          <FormControl display='flex' alignItems='center'>
-            <Checkbox
-              colorScheme='teal'
-              id='rememberMe'
-              {...register('rememberMe')}
-            >
-              Remember Me
-            </Checkbox>
-          </FormControl>
-        </VStack>
-      </Box>
-    </HStack>
+            <Heading as='h1' size='2xl'>
+              Todo App
+            </Heading>
+            <Text fontSize='lg'>Manage your work every day</Text>
+          </VStack>
+        </Box>
+
+        <Box
+          width={{ base: '100%', md: '40%' }} 
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+        >
+          <VStack
+            as='form'
+            align='stretch'
+            spacing={10}
+            width={{ base: '90%', md: '80%', lg: 'calc(100% - 260px)' }}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <VStack spacing={2} alignItems='start'>
+              <Heading as='h2' size='lg'>
+                Welcome back!
+              </Heading>
+              <Text fontSize='md'>Login to Get Started</Text>
+            </VStack>
+
+            <VStack spacing={4}>
+              <FormControl isInvalid={errors.email}>
+                <VStack spacing={2} alignItems='start'>
+                  <FormLabel m={0}>Email Address</FormLabel>
+                  <Input
+                    type='text'
+                    placeholder='name@example.com'
+                    isDisabled={isSubmitting}
+                    id='email'
+                    {...register('email', {
+                      required: 'This field can not be empty',
+                      pattern: {
+                        value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                        message: 'Invalid email format'
+                      }
+                    })}
+                  />
+                  <FormErrorMessage>
+                    {errors.email && errors.email.message}
+                  </FormErrorMessage>
+                </VStack>
+              </FormControl>
+
+              <FormControl isInvalid={errors.password}>
+                <VStack spacing={2} alignItems='start'>
+                  <FormLabel m={0}>Password</FormLabel>
+                  <Input
+                    type='password'
+                    placeholder='Enter password'
+                    isDisabled={isSubmitting}
+                    id='password'
+                    {...register('password', {
+                      required: 'This field can not be empty'
+                    })}
+                  />
+                  <FormErrorMessage>
+                    {errors.password && errors.password.message}
+                  </FormErrorMessage>
+                </VStack>
+              </FormControl>
+            </VStack>
+
+            <VStack spacing={4} alignItems='start'>
+              <Text>
+                Don&apos;t have an account?{' '}
+                <Link href='/register' color='teal.500'>
+                  Register here
+                </Link>
+              </Text>
+
+              <Button
+                colorScheme='teal'
+                width={75}
+                type='submit'
+                isLoading={isSubmitting}
+              >
+                Login
+              </Button>
+
+              <FormControl display='flex' alignItems='center'>
+                <Checkbox
+                  colorScheme='teal'
+                  id='rememberMe'
+                  {...register('rememberMe')}
+                >
+                  Remember Me
+                </Checkbox>
+              </FormControl>
+            </VStack>
+          </VStack>
+        </Box>
+      </HStack>
   )
 }
