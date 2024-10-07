@@ -12,11 +12,14 @@ import {
   Text,
   Link,
   Heading,
-  FormErrorMessage
+  FormErrorMessage,
+  useToast
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
+import axios from 'axios'
 export default function Register () {
   const navigate = useNavigate()
+  const toast = useToast()
 
   const {
     handleSubmit,
@@ -35,32 +38,56 @@ export default function Register () {
 
   async function onSubmit (values) {
     try {
-      const registerResult = await loginAPI(values)
+      const registerResult = await registerAPI({
+        fullName: values?.fullName,
+        email: values?.email,
+        password: values?.password
+      })
 
       if (registerResult) {
         navigate('/login')
       }
     } catch (error) {
-      // setError('email', { type: 'manual', message: error.message });
+      if (error.response) {
+        if (error.response?.status === axios.HttpStatusCode.Conflict) {
+          setError('email', {
+            type: 'manual',
+            message: error.response.data.message
+          })
+        }
+      } else {
+        toast({
+          title: 'Error',
+          description: 'An unexpected error occurred. Please try again.',
+          status: 'error',
+          duration: 4000,
+          isClosable: true
+        })
+      }
     }
   }
 
   return (
-    <HStack height='100vh' spacing={0}>
+    <HStack
+      spacing={0}
+      height='100vh'
+      overflowX='hidden'
+      direction={{ base: 'column', md: 'row' }}
+    >
       <Box
-        flex='1.56'
+        width={{ base: '100%', md: '60%' }}
         bgGradient='linear(to-b, #7BCBD4 , #29C6B7)'
         color='white'
-        height='100vh'
-        display={{ base: 'none', lg: 'flex' }}
+        height={{ base: 'auto', md: '100vh' }}
+        display={{ base: 'none', md: 'flex' }}
         alignItems='center'
       >
         <VStack
-          spacing={6}
+          spacing={5}
           width='100%'
           alignItems='flex-start'
           px={10}
-          ml={10}
+          ml={20}
         >
           <Heading as='h1' size='2xl'>
             Todo App
@@ -70,9 +97,7 @@ export default function Register () {
       </Box>
 
       <Box
-        flex='1'
-        px={{ base: 6, md: 20 }}
-        py={16}
+        width={{ base: '100%', md: '40%' }}
         display='flex'
         justifyContent='center'
         alignItems='center'
@@ -80,107 +105,112 @@ export default function Register () {
         <VStack
           as='form'
           align='stretch'
-          spacing={6}
-          width='100%'
-          maxW='320px'
+          spacing={10}
+          width={{ base: '90%', md: '80%', lg: 'calc(100% - 260px)' }}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Heading as='h2' size='lg'>
-            Hello!
-          </Heading>
-          <Text fontSize='md'>Sign Up to Get Started</Text>
+          <VStack spacing={2} alignItems='start'>
+            <Heading as='h2' size='lg'>
+              Hello!
+            </Heading>
+            <Text fontSize='md'>Sign Up to Get Started</Text>
+          </VStack>
 
-          <FormControl isInvalid={errors.fullName}>
-            <FormLabel>Full name</FormLabel>
-            <Input
-              type='text'
-              placeholder='John Holland'
-              {...register('fullName', {
-                required: 'This field can not be empty'
-              })}
-            />
-            <FormErrorMessage>
-              {errors.fullName && errors.fullName.message}
-            </FormErrorMessage>
-          </FormControl>
+          <VStack spacing={4}>
+            <FormControl isInvalid={errors.fullName}>
+              <FormLabel>Full name</FormLabel>
+              <Input
+                type='text'
+                placeholder='John Holland'
+                isDisabled={isSubmitting}
+                {...register('fullName', {
+                  required: 'This field can not be empty'
+                })}
+              />
+              <FormErrorMessage>
+                {errors.fullName && errors.fullName.message}
+              </FormErrorMessage>
+            </FormControl>
 
-          <FormControl isInvalid={errors.email}>
-            <FormLabel>Email Address</FormLabel>
-            <Input
-              type='text'
-              placeholder='name@example.com'
-              isDisabled={isSubmitting}
-              id='email'
-              {...register('email', {
-                required: 'This field can not be empty',
-                pattern: {
-                  value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
-                  message: 'Invalid email format'
-                }
-              })}
-            />
-            <FormErrorMessage>
-              {errors.email && errors.email.message}
-            </FormErrorMessage>
-          </FormControl>
-
-          <FormControl isInvalid={errors.password}>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type='password'
-              placeholder='Enter password'
-              isDisabled={isSubmitting}
-              id='password'
-              {...register('password', {
-                required: 'This field can not be empty',
-                minLength: {
-                  value: 6,
-                  message:
-                    'Please enter a valid password. The password is required at least 6 characters'
-                }
-              })}
-            />
-            <FormErrorMessage>
-              {errors.password && errors.password.message}
-            </FormErrorMessage>
-          </FormControl>
-
-          <FormControl isInvalid={errors.confirmPasssword}>
-            <FormLabel>Confirm Password</FormLabel>
-            <Input
-              type='password'
-              placeholder='Enter confirm password'
-              isDisabled={isSubmitting}
-              id='confirmPasssword'
-              {...register('confirmPasssword', {
-                required: 'This field can not be empty',
-                validate: val => {
-                  if (watch('password') != val) {
-                    return 'Password does not match'
+            <FormControl isInvalid={errors.email}>
+              <FormLabel>Email Address</FormLabel>
+              <Input
+                type='text'
+                placeholder='name@example.com'
+                isDisabled={isSubmitting}
+                id='email'
+                {...register('email', {
+                  required: 'This field can not be empty',
+                  pattern: {
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                    message: 'Invalid email format'
                   }
-                }
-              })}
-            />
-            <FormErrorMessage>
-              {errors.confirmPasssword && errors.confirmPasssword.message}
-            </FormErrorMessage>
-          </FormControl>
+                })}
+              />
+              <FormErrorMessage>
+                {errors.email && errors.email.message}
+              </FormErrorMessage>
+            </FormControl>
 
-          <Text>
-            Already have an account?{' '}
-            <Link href='/login' color='teal.500'>
-              Login here
-            </Link>
-          </Text>
+            <FormControl isInvalid={errors.password}>
+              <FormLabel>Password</FormLabel>
+              <Input
+                type='password'
+                placeholder='Enter password'
+                isDisabled={isSubmitting}
+                id='password'
+                {...register('password', {
+                  required: 'This field can not be empty',
+                  minLength: {
+                    value: 6,
+                    message:
+                      'Please enter a valid password. The password is required at least 6 characters'
+                  }
+                })}
+              />
+              <FormErrorMessage>
+                {errors.password && errors.password.message}
+              </FormErrorMessage>
+            </FormControl>
 
-          <Button
-            colorScheme='teal'
-            width='97px'
-            type='submit'
-            isLoading={isSubmitting}
-          >
-            Register
-          </Button>
+            <FormControl isInvalid={errors.confirmPasssword}>
+              <FormLabel>Confirm Password</FormLabel>
+              <Input
+                type='password'
+                placeholder='Enter confirm password'
+                isDisabled={isSubmitting}
+                id='confirmPasssword'
+                {...register('confirmPasssword', {
+                  required: 'This field can not be empty',
+                  validate: val => {
+                    if (watch('password') != val) {
+                      return 'Password does not match'
+                    }
+                  }
+                })}
+              />
+              <FormErrorMessage>
+                {errors.confirmPasssword && errors.confirmPasssword.message}
+              </FormErrorMessage>
+            </FormControl>
+          </VStack>
+          <VStack spacing={4} alignItems='start'>
+            <Text>
+              Already have an account?{' '}
+              <Link href='/login' color='teal.500'>
+                Login here
+              </Link>
+            </Text>
+
+            <Button
+              colorScheme='teal'
+              width={75}
+              type='submit'
+              isLoading={isSubmitting}
+            >
+              Register
+            </Button>
+          </VStack>
         </VStack>
       </Box>
     </HStack>
