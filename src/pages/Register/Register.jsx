@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { registerAPI } from '../../apis'
 import {
   Box,
@@ -10,14 +10,14 @@ import {
   Input,
   Button,
   Text,
-  Link,
   Heading,
   FormErrorMessage,
   useToast
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-export default function Register () {
+import { getCurrentUser } from '../../utils/helpers'
+export default function Register() {
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -29,14 +29,15 @@ export default function Register () {
     formState: { errors, isSubmitting }
   } = useForm()
 
+  const currentUser = getCurrentUser()
+
   useEffect(() => {
-    const currentUser = localStorage.getItem('currentUser')
     if (currentUser) {
       navigate('/')
     }
   }, [])
 
-  async function onSubmit (values) {
+  async function onSubmit(values) {
     try {
       const registerResult = await registerAPI({
         fullName: values?.fullName,
@@ -195,21 +196,21 @@ export default function Register () {
             </FormControl>
           </VStack>
           <VStack spacing={4} alignItems='start'>
-            <Text>
-              Already have an account?{' '}
-              <Link href='/login' color='teal.500'>
-                Login here
-              </Link>
-            </Text>
-
             <Button
               colorScheme='teal'
-              width={75}
               type='submit'
+              w='100%'
               isLoading={isSubmitting}
             >
               Register
             </Button>
+
+            <Text>
+              Already have an account?{' '}
+              <Link to='/login' style={{ color: 'teal' }}>
+                Login here
+              </Link>
+            </Text>
           </VStack>
         </VStack>
       </Box>

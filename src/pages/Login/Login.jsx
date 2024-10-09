@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { loginAPI } from '../../apis'
 import {
   Box,
@@ -10,7 +10,6 @@ import {
   Input,
   Button,
   Text,
-  Link,
   Heading,
   FormErrorMessage,
   Checkbox,
@@ -18,7 +17,10 @@ import {
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-export default function Login () {
+import { useDispatch } from 'react-redux'
+import { login } from '../../redux/userActions'
+import { getCurrentUser } from '../../utils/helpers'
+export default function Login() {
   const {
     handleSubmit,
     register,
@@ -30,14 +32,17 @@ export default function Login () {
 
   const navigate = useNavigate()
 
+  const dispatch = useDispatch()
+
+  const currentUser = getCurrentUser()
+
   useEffect(() => {
-    const currentUser = localStorage.getItem('currentUser')
     if (currentUser) {
       navigate('/')
     }
   }, [])
 
-  async function onSubmit (values) {
+  async function onSubmit(values) {
     try {
       const loginResult = await loginAPI({
         email: values?.email,
@@ -45,15 +50,17 @@ export default function Login () {
       })
 
       if (loginResult) {
+
         values?.isRemember
           ? localStorage.setItem(
-              'currentUser',
-              JSON.stringify(loginResult?.data)
-            )
+            'currentUser',
+            JSON.stringify(loginResult?.data?.data)
+          )
           : sessionStorage.setItem(
-              'currentUser',
-              JSON.stringify(loginResult?.data)
-            )
+            'currentUser',
+            JSON.stringify(loginResult?.data?.data)
+          )
+        dispatch(login(loginResult?.data?.data))
         navigate('/')
       }
     } catch (error) {
@@ -171,31 +178,30 @@ export default function Login () {
           </VStack>
 
           <VStack spacing={4} alignItems='start'>
-            <Text>
-              Don&apos;t have an account?{' '}
-              <Link href='/register' color='teal.500'>
-                Register here
-              </Link>
-            </Text>
+            <Checkbox
+              colorScheme='teal'
+              id='rememberMe'
+              {...register('rememberMe')}
+            >
+              Remember Me
+            </Checkbox>
 
             <Button
               colorScheme='teal'
-              width={75}
+              w='100%'
               type='submit'
               isLoading={isSubmitting}
             >
               Login
             </Button>
 
-            <FormControl display='flex' alignItems='center'>
-              <Checkbox
-                colorScheme='teal'
-                id='rememberMe'
-                {...register('rememberMe')}
-              >
-                Remember Me
-              </Checkbox>
-            </FormControl>
+            <Text>
+              Don&apos;t have an account?{' '}
+              <Link to='/register' style={{ color: 'teal' }}>
+                Register here
+              </Link>
+            </Text>
+
           </VStack>
         </VStack>
       </Box>
