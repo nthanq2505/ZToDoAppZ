@@ -1,27 +1,31 @@
 import { Avatar, Box, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { HiOutlineLogout } from "react-icons/hi";
-import avatar from '../../assets/avatar.png'
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/userActions";
+import { useNavigate } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ user }) {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser')
+    sessionStorage.removeItem('currentUser')
+    dispatch(logout())
+    navigate('/login')
+  }
   return (
-    <Box px={6}>
-      <VStack spacing={6}>
-        <HStack w='100%'>
-          <HStack w='50%'>
-            <Avatar style={{ size: '42px' }} src={avatar} />
-            <Text fontSize='lg' fontWeight='600'>ABC</Text>
-          </HStack>
-          <Box w='50%' justifyContent='end' display='flex'>
-            <Box h={10} w={10} borderRadius='50%' bgColor='#1F2A37' display='flex' alignItems='center' justifyContent='center'>
-              <HiOutlineLogout size={18} color="#FFFFFF" />
-            </Box>
-          </Box>
-        </HStack>
-
-        <Heading as='h2' size='lg'>
-          Welcome
-        </Heading>
-      </VStack>
-    </Box>
+    <HStack w='100%' display='flex' alignItems='start' px={6} h={10}>
+      <HStack w='50%'>
+        <Text fontSize='lg' fontWeight='600'>Welcome,</Text>
+        <Text fontSize='lg' fontWeight='500'>{user?.fullName}</Text>
+      </HStack>
+      <Box w='50%' justifyContent='end' display='flex'>
+        <Box h={10} w={10} borderRadius='50%' bgColor='#1F2A37' display='flex'
+          alignItems='center' justifyContent='center' cursor='pointer' onClick={handleLogout}>
+          <HiOutlineLogout size={18} color="#FFFFFF" />
+        </Box>
+      </Box>
+    </HStack>
   )
 }
