@@ -1,9 +1,16 @@
 import { API_ROOT } from '../utils/constants'
-import axios, { HttpStatusCode } from 'axios'
-const headersConfig = (token = '') => {
+import axios from 'axios'
+const headersConfig = (token = null) => {
+  if (token) {
+    return {
+      headers: {
+        authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  }
   return {
     headers: {
-      authorization: token,
       'Content-Type': 'application/json'
     }
   }
@@ -34,15 +41,16 @@ export const registerAPI = async user => {
   }
 }
 
-export const fetchTaskAPI = async token => {
+export const fetchTaskAPI = async (token, filter = {}) => {
   try {
+    const queryParams = new URLSearchParams(filter).toString()
     const response = await axios.get(
-      `${API_ROOT}/api/get-tasks`,
+      `${API_ROOT}/api/get-tasks?${queryParams}`,
       headersConfig(token)
     )
     return response.data
   } catch (error) {
-    alert('Cannot get task, plsease try again')
+    throw error
   }
 }
 
@@ -55,7 +63,7 @@ export const addTaskAPI = async (token, newTaskData) => {
     )
     return response.data
   } catch (error) {
-    alert('Cannot add task, plsease try again')
+    throw error
   }
 }
 
@@ -67,7 +75,7 @@ export const deleteTaskAPI = async (token, taskId) => {
     )
     return response
   } catch (error) {
-    alert('Cannot delete task, plsease try again')
+    throw error
   }
 }
 
@@ -80,6 +88,6 @@ export const updateTaskAPI = async (token, updateTaskData) => {
     )
     return response
   } catch (error) {
-    alert('Cannot update task, plsease try again')
+    throw error
   }
 }
