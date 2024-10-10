@@ -1,12 +1,11 @@
-import { Box, Divider, useToast, VStack } from "@chakra-ui/react";
+import { Divider, Flex, Spinner, useToast, VStack } from "@chakra-ui/react";
+import { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
+import { deleteTaskAPI, fetchTaskAPI, updateTaskAPI } from "../../apis";
+import { StateOfFilterTasks } from "../../utils/constants";
 import AddNewTaskForm from "../AddNewTaskForm/AddNewTaskForm";
 import FilterTask from "../FilterTask/FilterTask";
 import TaskList from "../TaskList/TaskList";
-import { useEffect, useState } from 'react'
-import { deleteTaskAPI, fetchTaskAPI, updateTaskAPI } from "../../apis";
-import { getCurrentUser } from "../../utils/helpers";
-import { StateOfFilterTasks } from "../../utils/constants";
-import { useSelector } from "react-redux";
 
 
 export default function TaskManageContainer() {
@@ -14,8 +13,11 @@ export default function TaskManageContainer() {
   const [filterValue, setFilterValue] = useState(StateOfFilterTasks.ALL)
   const toast = useToast()
   const user = useSelector(state => state.user)
+  const [isLoadingTask, setIsLoadingTask] = useState(false);
+
 
   const getTasks = async () => {
+    setIsLoadingTask(true)
     try {
       const resultGetTask = await fetchTaskAPI(user?.token, { isDone: filterValue })
       setTasks(resultGetTask.data)
@@ -27,6 +29,8 @@ export default function TaskManageContainer() {
         duration: 4000,
         isClosable: true
       })
+    } finally {
+      setIsLoadingTask(false)
     }
   }
 
@@ -69,7 +73,12 @@ export default function TaskManageContainer() {
       <AddNewTaskForm getTasks={getTasks} />
       <Divider color='#E2E8F0' />
       <FilterTask filterValue={filterValue} setFilterValue={setFilterValue} />
-      <TaskList tasks={tasks} handleDeleteTask={handleDeleteTask} handleUpdateTask={handleUpdateTask} />
+      {isLoadingTask ? (
+        <Flex justifyContent='center' alignItems='center' h='100%'>
+          <Spinner color="teal" size='lg' />
+        </Flex>) : (
+        <TaskList tasks={tasks} handleDeleteTask={handleDeleteTask} handleUpdateTask={handleUpdateTask} />
+      )}
     </VStack>
   )
 }

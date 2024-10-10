@@ -1,10 +1,9 @@
-import { Button, Flex, FormControl, FormErrorMessage, HStack, IconButton, Input } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import { BsPlus, BsPlusSquare } from "react-icons/bs";
-import { TbSquareRoundedPlus } from "react-icons/tb";
-import { addTaskAPI } from "../../apis";
-import { useSelector } from "react-redux";
+import { Button, FormControl, FormErrorMessage, HStack, Input } from "@chakra-ui/react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { TbSquareRoundedPlus } from "react-icons/tb";
+import { useSelector } from "react-redux";
+import { addTaskAPI } from "../../apis";
 
 export default function AddNewTaskForm({ getTasks }) {
   const {

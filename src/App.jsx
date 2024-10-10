@@ -4,11 +4,12 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { Provider } from 'react-redux'
 import store from './redux/store'
 import './styles.css'
+import theme from './theme'
 
-function App () {
+function App() {
   return (
     <Provider store={store}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <RouterProvider router={router} />
       </ChakraProvider>
     </Provider>

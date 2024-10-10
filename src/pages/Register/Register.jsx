@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import { getCurrentUser } from '../../utils/helpers'
+import { useSelector } from 'react-redux'
 export default function Register() {
   const navigate = useNavigate()
   const toast = useToast()
@@ -29,10 +29,10 @@ export default function Register() {
     formState: { errors, isSubmitting }
   } = useForm()
 
-  const currentUser = getCurrentUser()
+  const {isAuthenticated} = useSelector(state => state)
 
   useEffect(() => {
-    if (currentUser) {
+    if (isAuthenticated) {
       navigate('/')
     }
   }, [])

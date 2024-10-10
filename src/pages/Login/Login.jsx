@@ -1,25 +1,24 @@
-import { useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { loginAPI } from '../../apis'
 import {
   Box,
-  VStack,
-  HStack,
-  FormControl,
-  FormLabel,
-  Input,
   Button,
-  Text,
-  Heading,
-  FormErrorMessage,
   Checkbox,
-  useToast
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Text,
+  useToast,
+  VStack
 } from '@chakra-ui/react'
-import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { loginAPI } from '../../apis'
 import { login } from '../../redux/userActions'
-import { getCurrentUser } from '../../utils/helpers'
 export default function Login() {
   const {
     handleSubmit,
@@ -34,10 +33,10 @@ export default function Login() {
 
   const dispatch = useDispatch()
 
-  const currentUser = getCurrentUser()
+  const {isAuthenticated} = useSelector(state => state)
 
   useEffect(() => {
-    if (currentUser) {
+    if (isAuthenticated) {
       navigate('/')
     }
   }, [])
@@ -50,16 +49,12 @@ export default function Login() {
       })
 
       if (loginResult) {
-
-        values?.isRemember
-          ? localStorage.setItem(
+        if (values?.isRemember) {
+          localStorage.setItem(
             'currentUser',
             JSON.stringify(loginResult?.data?.data)
           )
-          : sessionStorage.setItem(
-            'currentUser',
-            JSON.stringify(loginResult?.data?.data)
-          )
+        }
         dispatch(login(loginResult?.data?.data))
         navigate('/')
       }

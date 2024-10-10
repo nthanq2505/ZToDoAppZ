@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, FormControl, FormErrorMessage, HStack, Input } from "@chakra-ui/react";
+import { Button, Checkbox, FormControl, FormErrorMessage, HStack, Input } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 export default function TaskItem({ task, handleDeleteTask, handleUpdateTask }) {
