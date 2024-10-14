@@ -1,6 +1,6 @@
 const innitialState = {
   isAuthenticated: false,
-  user: null
+  user: null,
 }
 const userReducer = (state = innitialState, action) => {
   switch (action.type) {
@@ -14,7 +14,7 @@ const userReducer = (state = innitialState, action) => {
       return {
         ...state,
         isAuthenticated: false,
-        user: null
+        user: null,
       }
     default:
       return state

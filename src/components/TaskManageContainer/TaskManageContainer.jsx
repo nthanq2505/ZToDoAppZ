@@ -22,13 +22,10 @@ export default function TaskManageContainer() {
       const resultGetTask = await fetchTaskAPI(user?.token, { isDone: filterValue })
       setTasks(resultGetTask.data)
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
-        status: 'error',
-        duration: 4000,
-        isClosable: true
-      })
+      toast(
+        setToastContent(toastTitle.ERROR, message_error.INTERNAL_SERVER_ERROR, toastStatus.ERROR)
+
+      )
     } finally {
       setIsLoadingTask(false)
     }

@@ -1,15 +1,17 @@
-import { Button, FormControl, FormErrorMessage, HStack, Input } from "@chakra-ui/react";
+import { Button, FormControl, FormErrorMessage, HStack, Input, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TbSquareRoundedPlus } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import { addTaskAPI } from "../../apis";
+import { message_error, setToastContent, toastStatus, toastTitle } from "../../utils/constants";
 
 export default function AddNewTaskForm({ getTasks }) {
   const {
     handleSubmit,
     register,
     reset,
+    setError,
     formState: { errors, isSubmitting }
   } = useForm()
   const user = useSelector(state => state.user)
@@ -22,29 +24,32 @@ export default function AddNewTaskForm({ getTasks }) {
     }
   }
 
+  const toast = useToast()
+
   const cancelAddingTask = () => {
     setIsAdding(false)
     reset({ 'taskName': '' })
   }
 
   async function onSubmit(values) {
+    if (values.taskName.trim().length === 0) {
+      return setError('taskName', {
+        type: 'manual',
+        message: 'This field can not be empty'
+      })
+    }
     try {
       await addTaskAPI(user.token, {
-        name: values?.taskName,
+        name: values?.taskName.trim(),
         isDone: false
       })
       getTasks()
       reset({ taskName: '' })
       setIsAdding(false)
-
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
-        status: 'error',
-        duration: 4000,
-        isClosable: true
-      })
+      toast(
+        setToastContent(toastTitle.ERROR, message_error.INTERNAL_SERVER_ERROR, toastStatus.ERROR)
+      )
     }
 
   }

@@ -33,7 +33,7 @@ export default function Login() {
 
   const dispatch = useDispatch()
 
-  const {isAuthenticated} = useSelector(state => state)
+  const { isAuthenticated } = useSelector(state => state)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -49,13 +49,13 @@ export default function Login() {
       })
 
       if (loginResult) {
-        if (values?.isRemember) {
-          localStorage.setItem(
-            'currentUser',
-            JSON.stringify(loginResult?.data?.data)
-          )
+        const { data } = loginResult?.data
+        dispatch(login(data))
+        if (values?.rememberMe) {
+          localStorage.setItem('authToken', data?.token)
+        } else {
+          sessionStorage.setItem('authToken', data?.token)
         }
-        dispatch(login(loginResult?.data?.data))
         navigate('/')
       }
     } catch (error) {
@@ -74,13 +74,8 @@ export default function Login() {
           })
         }
       } else {
-        toast({
-          title: 'Error',
-          description: 'An unexpected error occurred. Please try again.',
-          status: 'error',
-          duration: 4000,
-          isClosable: true
-        })
+        toast(setToastContent(toastTitle.ERROR, message_error.INTERNAL_SERVER_ERROR, toastStatus.ERROR)
+        )
       }
     }
   }
@@ -89,7 +84,6 @@ export default function Login() {
     <HStack
       spacing={0}
       height='100vh'
-      overflowX='hidden'
       direction={{ base: 'column', md: 'row' }}
     >
       <Box

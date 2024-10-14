@@ -29,7 +29,7 @@ export default function Register() {
     formState: { errors, isSubmitting }
   } = useForm()
 
-  const {isAuthenticated} = useSelector(state => state)
+  const { isAuthenticated } = useSelector(state => state)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -57,13 +57,8 @@ export default function Register() {
           })
         }
       } else {
-        toast({
-          title: 'Error',
-          description: 'An unexpected error occurred. Please try again.',
-          status: 'error',
-          duration: 4000,
-          isClosable: true
-        })
+        toast(setToastContent(toastTitle.ERROR, message_error.INTERNAL_SERVER_ERROR, toastStatus.ERROR)
+        )
       }
     }
   }

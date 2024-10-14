@@ -1,16 +1,17 @@
 import { Box, HStack, Text } from "@chakra-ui/react";
 import { HiOutlineLogout } from "react-icons/hi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/userActions";
 
-export default function Header({ user }) {
+export default function Header() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { user } = useSelector(state => state)
 
   const handleLogout = () => {
-    localStorage.removeItem('currentUser')
-    sessionStorage.removeItem('currentUser')
+    localStorage.removeItem('authToken')
+    sessionStorage.removeItem('authToken')
     dispatch(logout())
     navigate('/login')
   }

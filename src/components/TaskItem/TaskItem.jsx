@@ -22,8 +22,14 @@ export default function TaskItem({ task, handleDeleteTask, handleUpdateTask }) {
   }
 
   async function onSubmit(values) {
+    if (values.taskName.trim().length === 0) {
+      return setError('taskName', {
+        type: 'manual',
+        message: 'This field can not be empty'
+      })
+    }
     setIsEditing(!isEditing)
-    await handleUpdateTask({ ...task, name: values?.taskName })
+    await handleUpdateTask({ ...task, name: values?.taskName.trim() })
   }
 
   const handleCancelEditTask = () => {
@@ -39,7 +45,7 @@ export default function TaskItem({ task, handleDeleteTask, handleUpdateTask }) {
     <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
       <HStack px={6} py={5} w='100%' justifyContent='space-between' bgColor='#F9FAFB' borderRadius={12} border={isEditing ? '1px solid teal' : 'none'}>
         <HStack spacing={4}>
-          <Checkbox size='lg' spacing={6} colorScheme="teal" isChecked={task.isDone} onChange={handleClickTaskStatus} />
+          <Checkbox size='lg' spacing={6} colorScheme="teal" isDisabled={isEditing} isChecked={task.isDone} onChange={handleClickTaskStatus} />
           <FormControl isInvalid={errors.taskName}>
             <Input
               variant="unstyled"
@@ -62,8 +68,8 @@ export default function TaskItem({ task, handleDeleteTask, handleUpdateTask }) {
             <Button colorScheme='red' variant='solid' size='sm' onClick={handleCancelEditTask} >Cancel</Button>
           </HStack> :
           <HStack spacing={4} h={8}>
-            <Button colorScheme='teal' variant='outline' color={task.isDone ? 'gray' : 'teal'} size='sm' onClick={handleClickEditTask}>Edit</Button>
-            <Button colorScheme='red' variant='outline' color={task.isDone ? 'gray' : 'red'} size='sm' onClick={() => { handleDeleteTask(task?._id) }} >Delete</Button>
+            <Button colorScheme='teal' variant='outline' color={task.isDone ? 'gray' : 'teal'} isDisabled={task.isDone} size='sm' onClick={handleClickEditTask}>Edit</Button>
+            <Button colorScheme='red' variant='outline' color='red' size='sm' onClick={() => { handleDeleteTask(task?._id) }} >Delete</Button>
           </HStack>}
       </HStack>
     </form>
