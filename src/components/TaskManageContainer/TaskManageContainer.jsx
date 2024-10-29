@@ -2,7 +2,7 @@ import { Divider, Flex, Spinner, useToast, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import { deleteTaskAPI, fetchTaskAPI, updateTaskAPI } from "../../apis";
-import { StateOfFilterTasks } from "../../utils/constants";
+import { message_error, setToastContent, toastStatus, toastTitle, StateOfFilterTasks } from "../../utils/constants";
 import AddNewTaskForm from "../AddNewTaskForm/AddNewTaskForm";
 import FilterTask from "../FilterTask/FilterTask";
 import TaskList from "../TaskList/TaskList";
@@ -40,13 +40,8 @@ export default function TaskManageContainer() {
       await deleteTaskAPI(user?.token, taskId)
       getTasks()
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
-        status: 'error',
-        duration: 4000,
-        isClosable: true
-      })
+      toast(setToastContent(toastTitle.ERROR, message_error.INTERNAL_SERVER_ERROR, toastStatus.ERROR)
+      )
     }
   }
 
@@ -55,13 +50,8 @@ export default function TaskManageContainer() {
       await updateTaskAPI(user?.token, data)
       getTasks()
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
-        status: 'error',
-        duration: 4000,
-        isClosable: true
-      })
+      toast(setToastContent(toastTitle.ERROR, message_error.INTERNAL_SERVER_ERROR, toastStatus.ERROR)
+      )
     }
   }
 

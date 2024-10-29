@@ -12,7 +12,7 @@ export const toastStatus = {
 }
 
 export const toastTitle = {
-  ERROR : 'error'
+  ERROR: 'error'
 }
 
 export const httpStatusCodes = {
@@ -26,11 +26,11 @@ export const httpStatusCodes = {
   INTERNAL_SERVER_ERROR: 500
 }
 
-export const StateOfFilterTasks = Object.freeze({
+export const StateOfFilterTasks = {
   ALL: 'all',
   DONE: 'done',
   NOT_DONE: 'not_done'
-})
+}
 
 export const setToastContent = (
   title,
@@ -42,7 +42,7 @@ export const setToastContent = (
   return {
     title: title,
     description: descript,
-    status: status, 
+    status: status,
     duration: duration,
     isClosable: isClosable
   }
